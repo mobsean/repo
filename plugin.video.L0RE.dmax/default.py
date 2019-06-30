@@ -91,7 +91,7 @@ def log(msg, level=xbmc.LOGNOTICE):
 
 def getUrl(url, header=None, referer=None):
 	global cj
-	debug("(getUrl) Url : "+url)
+	debug("(getUrl) Url : "+str(url))
 	for cook in cj:
 		debug("(getUrl) Cookie : "+str(cook))
 	opener = build_opener(HTTPCookieProcessor(cj))
@@ -161,14 +161,14 @@ def listthemes():
 	for link, name in result:
 		url = baseURL+"api/genres/"+link.split('/')[-1]+"?limit=100"
 		name = py2_enc(name).replace('&amp;', '&').strip()
-		debug("(listthemes) ### NAME : "+name+" || LINK : "+link+" || URL : "+url+" ###")
+		debug("(listthemes) ### NAME : "+str(name)+" || LINK : "+str(link)+" || URL : "+str(url)+" ###")
 		if "themen" in link:
 			addDir(name, url, "listseries", icon, nosub="overview_themes")
 	xbmcplugin.endOfDirectory(pluginhandle)
 
 def listseries(url, PAGE, POS, ADDITION):
 	debug("-------------------------- LISTSERIES --------------------------")
-	debug("(listseries) ### URL : "+url+" ### PAGE : "+str(PAGE)+" ### POS : "+str(POS)+" ### ADDITION : "+ADDITION+" ###")
+	debug("(listseries) ### URL : "+str(url)+" ### PAGE : "+str(PAGE)+" ### POS : "+str(POS)+" ### ADDITION : "+str(ADDITION)+" ###")
 	count = int(POS)
 	readyURL = url+"&page="+str(PAGE)
 	content = getUrl(readyURL)
@@ -191,12 +191,17 @@ def listseries(url, PAGE, POS, ADDITION):
 		image = ""
 		if 'image' in elem and 'src' in elem['image'] and elem['image']['src'] != "" and elem['image']['src'] != None:
 			image = elem['image']['src']
-		debug("(listseries) noFilter ### NAME : "+name+" || IDD : "+idd+" || IMAGE : "+image+" ###")
+		debug("(listseries) noFilter ### NAME : "+ str(name) +" || IDD : "+ str(idd) +" || IMAGE : "+ str(image) +" ###")
 		if idd !="" and len(idd) < 9 and plot != "" and image != "":
 			count += 1
 			if 'beliebt' in url:
 				name = "[COLOR chartreuse]"+str(count)+" •  [/COLOR]"+title
-			debug("(listseries) Filtered ### NAME : "+name+" || IDD : "+idd+" || IMAGE : "+image+" ###")
+			try: 
+				if elem['hasNewEpisodes']:
+					name = name + " - " + translation(30236)
+			except:
+				pass
+			debug("(listseries) Filtered ### NAME : "+str(name)+" || IDD : "+str(idd)+" || IMAGE : "+str(image)+" ###")
 			addType=2
 			if os.path.exists(channelFavsFile):
 				with open(channelFavsFile, 'r') as output:
@@ -222,7 +227,7 @@ def listepisodes(idd, originalSERIE):
 	SELECT = []
 	pos1 = 0
 	url = baseURL+"api/show-detail/"+str(idd)
-	debug("(listepisodes) ### URL : "+url+" ### originalSERIE : "+originalSERIE+" ###")
+	debug("(listepisodes) ### URL : "+str(url)+" ### originalSERIE : "+str(originalSERIE)+" ###")
 	content = getUrl(url)
 	debug("(listepisodes) ##### CONTENT : "+str(content)+" #####")
 	DATA = json.loads(content)
@@ -333,8 +338,8 @@ def listepisodes(idd, originalSERIE):
 			name = title1.strip()+"  "+title2.strip()
 			if title2 == "":
 				name = title1.strip()
-			debug("(listepisodes) ### NAME : "+name+" || IDD : "+idd2+" || GENRE : "+genstr+" ###")
-			debug("(listepisodes) ### IMAGE : "+image+" || SEASON : "+season+" || EPISODE : "+episode+" ###")
+			debug("(listepisodes) ### NAME : "+str(name)+" || IDD : "+str(idd2)+" || GENRE : "+str(genstr)+" ###")
+			debug("(listepisodes) ### IMAGE : "+str(image)+" || SEASON : "+str(season)+" || EPISODE : "+str(episode)+" ###")
 			addLink(name, idd2, "playvideo", image, plot=plot, duration=duration, seriesname=originalSERIE, season=season, episode=episode, genre=genstr, year=year, date=date)
 	xbmcplugin.endOfDirectory(pluginhandle)
 
@@ -349,7 +354,7 @@ def playvideo(idd2):
 	playurl = "https://sonic-eu1-prod.disco-api.com/playback/videoPlaybackInfo/"+str(idd2)
 	header = [('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36'), ('Authorization', 'Bearer '+key)]
 	result = getUrl(playurl, header=header)
-	debug("(playvideo) ##### RESULT : "+result+" #####")
+	debug("(playvideo) ##### RESULT : "+str(result)+" #####")
 	DATA = json.loads(result)
 	videoURL = DATA['data']['attributes']['streaming']['hls']['url']
 	log("(playvideo) StreamURL : "+videoURL)
@@ -381,7 +386,7 @@ def listShowsFavs():
 				url = re.compile('URL=<uu>(.*?)</uu>').findall(line)[0]
 				thumb = re.compile('THUMB=<ii>(.*?)</ii>').findall(line)[0]
 				plot = re.compile('PLOT=<pp>(.*?)</pp>').findall(line)[0].replace('#n#', '\n')
-				debug("(listShowsFavs) ##### NAME : "+name+" | URL : "+url+" #####")
+				debug("(listShowsFavs) ##### NAME : "+str(name)+" | URL : "+str(url)+" #####")
 				addDir(name, url, "listepisodes", thumb, plot, originalSERIE=name, FAVdel=True)
 	xbmcplugin.endOfDirectory(pluginhandle)
 
@@ -421,8 +426,8 @@ def tolibrary(url, name, stunden):
 		urln = 'plugin://{0}/?mode=generatefiles&url={1}&name={2}'.format(addon.getAddonInfo('id'), url, name)
 		urln = quote_plus(urln)
 		source = quote_plus(mediaPath+fixPathSymbols(name))
-		debug("(tolibrary) ##### URLn : "+urln+" #####")
-		debug("(tolibrary) ##### SOURCE : "+source+" #####")
+		debug("(tolibrary) ##### URLn : "+str(urln)+" #####")
+		debug("(tolibrary) ##### SOURCE : "+str(source)+" #####")
 		xbmc.executebuiltin('RunPlugin(plugin://service.L0RE.cron/?mode=adddata&name={0}&stunden={1}&url={2}&source={3})'.format(name, stunden, urln, source))
 		xbmcgui.Dialog().notification(translation(30526), (translation(30527).format(name,str(stunden))), icon, 12000)
 
@@ -435,9 +440,9 @@ def generatefiles(idd, name):
 	pos2 = 0
 	SPECIALS = False
 	url = baseURL+"api/show-detail/"+str(idd)
-	debug("(generatefiles) ##### URL : "+url+" #####")
+	debug("(generatefiles) ##### URL : "+str(url)+" #####")
 	ppath =py2_uni(mediaPath)+py2_uni(fixPathSymbols(name))
-	debug("(generatefiles) ##### PPATH : "+ppath+" #####")
+	debug("(generatefiles) ##### PPATH : "+str(ppath)+" #####")
 	if os.path.isdir(ppath):
 		shutil.rmtree(ppath, ignore_errors=True)
 		xbmc.sleep(500)

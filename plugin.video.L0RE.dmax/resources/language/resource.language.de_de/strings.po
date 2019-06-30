@@ -93,7 +93,12 @@ msgctxt "#30235"
 msgid "[B][COLOR ff0099ff]INFO[/COLOR][/B]"
 msgstr "[B][COLOR ff0099ff]INFO[/COLOR][/B]"
 
-# empty strings from id 30236 to 30349
+msgctxt "#30236"
+msgid "[COLOR lime]New Episode/s[/COLOR]"
+msgstr "[COLOR lime]Neue Folge/n[/COLOR]"
+
+
+# empty strings from id 30237 to 30349
 # SETTINGS-DESCRIPTIONS
 
 msgctxt "#30350"
