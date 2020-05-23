@@ -19,6 +19,7 @@ if PY2:
 elif PY3:
 	from urllib.parse import quote, unquote, quote_plus, unquote_plus, urlencode, urljoin, urlparse, urlunparse  # Python 3+
 	from urllib.request import build_opener, Request, urlopen  # Python 3+
+import requests
 try: import StorageServer
 except: from . import storageserverdummy as StorageServer
 import json
@@ -484,18 +485,14 @@ def LOGIN():
 			debug_MS("(LOGIN) ##### END-CHECK = Setting(freeonly) : {0} #####".format(str(addon.getSetting("freeonly"))))
 			debug_MS("(LOGIN) <<<<< Ende LOGIN <<<<<")
 			return 1,persToken
-	url = "https://api.tvnow.de/v3/backend/login?fields=[%22id%22,%22token%22,%22user%22,[%22agb%22]]"
-	values = {'email': USER, 'password': PWD}
-	data = urlencode(values)
-	debug_MS("(LOGIN) ##### Credentials : {0} #####".format(data))
 	try:
-		req = Request(url)
-		req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101 Firefox/60.0')
-		response = urlopen(req, data, timeout=30)
-		content = response.read()
-		debug_MS("(LOGIN) ##### Content-Login : {0} #####".format(str(content)))
-		response.close()
-		result = json.loads(content)
+		url = 'https://auth.tvnow.de/login'
+		headers = {'content-type': 'application/json', 'access-control-allow-headers': 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Auth-Token,X-Now-Logged-In', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0'}
+		payload = {'email': USER, 'password': PWD}
+		debug_MS("(LOGIN) ##### Credentialz : {0} #####".format(payload))
+		r = requests.post(url, headers=headers, json=payload)
+		debug_MS("(LOGIN) ##### Response Status-Code : {0} #####".format(str(r.status_code)))
+		result = r.json()
 		if 'token' in result and result['token'] !="":
 			persToken = result['token']
 			debug_MS("(LOGIN) ##### persToken : {0} #####".format(str(persToken)))

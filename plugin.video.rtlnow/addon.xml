@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<addon id="plugin.video.rtlnow" name="TVNOW - DE" version="2.0.9" provider-name="L0RE, realvito">
+<addon id="plugin.video.rtlnow" name="TVNOW - DE" version="2.1.0" provider-name="L0RE, realvito, mob">
 	<requires>
 		<import addon="xbmc.python" version="2.25.0"/>
 		<import addon="script.common.plugin.cache" version="2.6.0" optional="true"/>
 		<import addon="inputstream.adaptive" version="2.0.10"/>
 		<import addon="script.module.inputstreamhelper" version="0.4.0"/>
 		<import addon="service.cron.autobiblio" version="2.0.4" optional="true"/>
+		<import addon="script.module.requests" version="2.23.0"/>
 	</requires>
 	<extension point="xbmc.python.pluginsource" library="default.py">
 		<provides>video</provides>
@@ -28,7 +29,10 @@
 			<icon>icon.png</icon>
 			<fanart>fanart.jpg</fanart>
 		</assets>
-		<news>[B][COLOR orangered]Version 2.0.9  (20.03.2020)[/COLOR][/B] by realvito[CR]
+		<news>[B][COLOR orangered]Version 2.1.0  (23.05.2020)[/COLOR][/B] by mob[CR]
+- fixed: TV NOW Auth URL aktualisiert.
+---------------------------------------------------------------------------------------------------------------------------------
+[B][COLOR orangered]Version 2.0.9  (20.03.2020)[/COLOR][/B] by realvito[CR]
 - fixed: Wenn in einer Episode einer Jahresrubrik kein Plot enthalten ist wird die Übersicht nicht geöffnet und ein Fehler wird angezeigt
 ---------------------------------------------------------------------------------------------------------------------------------
 [B][COLOR orangered]Version 2.0.8  (02.03.2020)[/COLOR][/B] by realvito[CR]
